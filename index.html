@@ -309,7 +309,7 @@
     const bgMusic = document.getElementById("bgMusic");
     const musicBtn = document.getElementById("musicBtn");
 
-    // Funny messages for "No" button
+    // Funny messages for "No" button - more messages for longer game!
     const funnyMessages = [
       "Nice try! 😏",
       "Haha, not gonna happen!",
@@ -323,7 +323,24 @@
       "I don't think so! 💖",
       "Really? REALLY?! 😤",
       "The universe says YES!",
-      "Your finger slipped, right? 😉"
+      "Your finger slipped, right? 😉",
+      "Getting tired yet? 😂",
+      "The Yes button is looking pretty good now! 👀",
+      "Just give up already! 💕",
+      "You know you want to say yes! 🥺",
+      "I can do this all day! 😎",
+      "Look how big that Yes button is! 😍",
+      "This is getting ridiculous... just say YES!",
+      "Come onnnn! 🙏",
+      "Your resistance is futile! 💘",
+      "Why are you like this? 😭💕",
+      "JUST. CLICK. YES. 😤",
+      "Fine, I'll wait... ⏰",
+      "Still trying? I admire your dedication 😂",
+      "The Yes button misses you! 💔",
+      "Okay this is just mean now 😢",
+      "I'm not giving up! Are you? 💪",
+      "Last chance... jk there's no last chance 😜"
     ];
 
     let messageIndex = 0;
@@ -359,9 +376,13 @@
       noMessage.textContent = funnyMessages[messageIndex % funnyMessages.length];
       messageIndex++;
 
-      // Make Yes button grow bigger!
-      yesScale += 0.15;
+      // Make Yes button grow bigger (slower growth = longer game!)
+      yesScale += 0.08;
       yesBtn.style.transform = `scale(${yesScale})`;
+      
+      // Also make the Yes button glow more as it gets bigger
+      const glowIntensity = Math.min((yesScale - 1) * 50, 60);
+      yesBtn.style.boxShadow = `0 15px 35px rgba(255,77,109,${0.55 + (yesScale-1)*0.1}), 0 0 ${glowIntensity}px rgba(255,77,109,0.6)`;
 
       const cardRect = card.getBoundingClientRect();
       const btnRect = noBtn.getBoundingClientRect();
