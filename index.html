@@ -36,9 +36,20 @@
       100% { background-position: 0% 50%; }
     }
 
+    /* Sparkle cursor canvas */
+    #sparkle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
     /* Card */
     .card {
-      width: min(92%, 420px);
+      width: min(92%, 480px);
       padding: 40px 30px 45px;
       background: rgba(255, 255, 255, 0.75);
       backdrop-filter: blur(18px);
@@ -68,6 +79,32 @@
       opacity: 0.7;
     }
 
+    /* Photo gallery */
+    .photo-gallery {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .photo-gallery img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 3px solid #fff;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .photo-gallery img:hover {
+      transform: scale(1.08) rotate(2deg);
+    }
+
+    .photo-gallery img:nth-child(2):hover {
+      transform: scale(1.08) rotate(-2deg);
+    }
+
     .emoji {
       font-size: 68px;
       margin-bottom: 12px;
@@ -81,12 +118,40 @@
       75% { transform: scale(1.12); }
     }
 
+    /* Countdown */
+    .countdown {
+      background: linear-gradient(135deg, #ff4d6d, #ff758f);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      box-shadow: 0 8px 20px rgba(255,77,109,0.3);
+    }
+
+    .countdown-time {
+      font-size: 22px;
+      font-weight: 600;
+      font-family: "Playfair Display", serif;
+      margin-top: 5px;
+    }
+
     h2 {
       font-family: "Playfair Display", serif;
       font-size: 28px;
       color: #4a1c2f;
       margin-bottom: 30px;
       line-height: 1.35;
+    }
+
+    /* Funny "no" message */
+    .no-message {
+      font-size: 14px;
+      color: #ff4d6d;
+      font-weight: 500;
+      min-height: 24px;
+      margin-bottom: 10px;
+      transition: all 0.3s ease;
     }
 
     .buttons {
@@ -118,7 +183,6 @@
     }
 
     #yes:hover {
-      transform: translateY(-3px);
       box-shadow: 0 20px 40px rgba(255,77,109,0.7);
     }
 
@@ -133,6 +197,27 @@
       font-size: 13px;
       color: #6b6b6b;
       font-style: italic;
+    }
+
+    /* Music control */
+    .music-control {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+
+    .music-control:hover {
+      transform: scale(1.1);
     }
 
     /* Floating depth hearts */
@@ -162,22 +247,52 @@
       button { padding: 12px 28px; font-size: 15px; }
       #yes { left: 8%; }
       #no { left: 55%; }
+      .photo-gallery img {
+        width: 90px;
+        height: 90px;
+      }
     }
   </style>
 </head>
 
 <body>
 
+  <!-- Sparkle cursor canvas -->
+  <canvas id="sparkle-canvas"></canvas>
+
+  <!-- Background music -->
+  <audio id="bgMusic" loop>
+    <source src="rosary.mpeg" type="audio/mpeg">
+  </audio>
+
+  <button class="music-control" id="musicBtn" title="Toggle Music">🎵</button>
+
   <div class="card">
+    <!-- Photo gallery -->
+    <div class="photo-gallery">
+      <img src="WhatsApp Image 2026-02-06 at 19.33.55.jpeg" alt="Us 💕">
+      <img src="WhatsApp Image 2026-02-06 at 19.33.55 (1).jpeg" alt="Us 💕">
+    </div>
+
     <div class="emoji">🐱❤️</div>
+
+    <!-- Countdown timer -->
+    <div class="countdown">
+      ⏰ Valentine's Day in:
+      <div class="countdown-time" id="countdown">Loading...</div>
+    </div>
+
     <h2>Bebee,<br>will you be my Valentine?</h2>
+
+    <!-- Funny message when hovering No -->
+    <div class="no-message" id="noMessage"></div>
 
     <div class="buttons">
       <button id="yes">Yes 💖</button>
       <button id="no">No 🙈</button>
     </div>
 
-    <div class="hint">Some love stories don’t allow “no” ✨</div>
+    <div class="hint">Some love stories don't allow "no" ✨</div>
   </div>
 
   <!-- Sounds -->
@@ -190,10 +305,63 @@
     const card = document.querySelector(".card");
     const hoverSound = document.getElementById("hoverSound");
     const yesSound = document.getElementById("yesSound");
+    const noMessage = document.getElementById("noMessage");
+    const bgMusic = document.getElementById("bgMusic");
+    const musicBtn = document.getElementById("musicBtn");
+
+    // Funny messages for "No" button
+    const funnyMessages = [
+      "Nice try! 😏",
+      "Haha, not gonna happen!",
+      "Are you sure about that? 🤭",
+      "The button said NO to you! 😂",
+      "Try again, sweetheart 💕",
+      "You can't escape my love! 🥰",
+      "Wrong answer, try the other one!",
+      "That button is broken 😜",
+      "Oops! It ran away!",
+      "I don't think so! 💖",
+      "Really? REALLY?! 😤",
+      "The universe says YES!",
+      "Your finger slipped, right? 😉"
+    ];
+
+    let messageIndex = 0;
+    let yesScale = 1;
+
+    // Music control
+    let musicPlaying = false;
+    musicBtn.addEventListener("click", () => {
+      if (musicPlaying) {
+        bgMusic.pause();
+        musicBtn.textContent = "🎵";
+      } else {
+        bgMusic.play();
+        musicBtn.textContent = "🔊";
+      }
+      musicPlaying = !musicPlaying;
+    });
+
+    // Auto-play music on first interaction
+    document.body.addEventListener("click", () => {
+      if (!musicPlaying) {
+        bgMusic.play();
+        musicBtn.textContent = "🔊";
+        musicPlaying = true;
+      }
+    }, { once: true });
 
     noBtn.addEventListener("mouseenter", () => {
       hoverSound.currentTime = 0;
       hoverSound.play();
+
+      // Show funny message
+      noMessage.textContent = funnyMessages[messageIndex % funnyMessages.length];
+      messageIndex++;
+
+      // Make Yes button grow bigger!
+      yesScale += 0.15;
+      yesBtn.style.transform = `scale(${yesScale})`;
 
       const cardRect = card.getBoundingClientRect();
       const btnRect = noBtn.getBoundingClientRect();
@@ -215,10 +383,34 @@
       });
 
       setTimeout(() => {
-        alert("YAY 💕 I can’t wait for Valentine’s Day with you!");
+        alert("YAY 💕 I can't wait for Valentine's Day with you!");
       }, 500);
     });
 
+    // Countdown timer to Valentine's Day
+    function updateCountdown() {
+      const valentines = new Date("February 14, 2026 00:00:00").getTime();
+      const now = new Date().getTime();
+      const diff = valentines - now;
+
+      if (diff <= 0) {
+        document.getElementById("countdown").textContent = "💕 It's Valentine's Day! 💕";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      document.getElementById("countdown").textContent = 
+        `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // Floating hearts
     function createHeart() {
       const heart = document.createElement("div");
       heart.className = "heart";
@@ -233,6 +425,79 @@
     }
 
     setInterval(createHeart, 380);
+
+    // ✨ Sparkle cursor effect
+    const canvas = document.getElementById("sparkle-canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    const sparkles = [];
+    const colors = ["#ff4d6d", "#ff9a9e", "#fbc2eb", "#fff", "#ffd700", "#ff69b4"];
+
+    document.addEventListener("mousemove", (e) => {
+      for (let i = 0; i < 3; i++) {
+        sparkles.push({
+          x: e.clientX,
+          y: e.clientY,
+          size: Math.random() * 4 + 2,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          speedX: (Math.random() - 0.5) * 3,
+          speedY: (Math.random() - 0.5) * 3,
+          life: 1
+        });
+      }
+    });
+
+    function animateSparkles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      for (let i = sparkles.length - 1; i >= 0; i--) {
+        const s = sparkles[i];
+        s.x += s.speedX;
+        s.y += s.speedY;
+        s.life -= 0.025;
+        s.size *= 0.97;
+
+        if (s.life <= 0) {
+          sparkles.splice(i, 1);
+          continue;
+        }
+
+        ctx.save();
+        ctx.globalAlpha = s.life;
+        ctx.fillStyle = s.color;
+        ctx.beginPath();
+        
+        // Draw a star shape
+        const spikes = 4;
+        const outerRadius = s.size;
+        const innerRadius = s.size / 2;
+        
+        for (let j = 0; j < spikes * 2; j++) {
+          const radius = j % 2 === 0 ? outerRadius : innerRadius;
+          const angle = (j * Math.PI) / spikes - Math.PI / 2;
+          const x = s.x + Math.cos(angle) * radius;
+          const y = s.y + Math.sin(angle) * radius;
+          
+          if (j === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+      
+      requestAnimationFrame(animateSparkles);
+    }
+
+    animateSparkles();
   </script>
 
 </body>
