@@ -352,27 +352,42 @@
     let messageIndex = 0;
     let yesScale = 1;
 
-    // Music control
-    let musicPlaying = false;
-    musicBtn.addEventListener("click", () => {
+    // Music control - starts playing automatically
+    let musicPlaying = true;
+    bgMusic.volume = 0.7;
+    
+    // Try to autoplay on page load
+    window.addEventListener('load', () => {
+      bgMusic.play().then(() => {
+        musicBtn.textContent = "🔊";
+        musicPlaying = true;
+      }).catch(() => {
+        // Autoplay blocked, will play on first click
+        musicPlaying = false;
+        musicBtn.textContent = "🎵";
+        document.body.addEventListener("click", () => {
+          if (!musicPlaying) {
+            bgMusic.play();
+            musicBtn.textContent = "🔊";
+            musicPlaying = true;
+          }
+        }, { once: true });
+      });
+    });
+    
+    // Toggle music on/off
+    musicBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
       if (musicPlaying) {
         bgMusic.pause();
         musicBtn.textContent = "🎵";
+        musicPlaying = false;
       } else {
-        bgMusic.play();
-        musicBtn.textContent = "🔊";
-      }
-      musicPlaying = !musicPlaying;
-    });
-
-    // Auto-play music on first interaction
-    document.body.addEventListener("click", () => {
-      if (!musicPlaying) {
         bgMusic.play();
         musicBtn.textContent = "🔊";
         musicPlaying = true;
       }
-    }, { once: true });
+    });
 
     noBtn.addEventListener("mouseenter", () => {
       hoverSound.currentTime = 0;
@@ -441,7 +456,7 @@
       });
 
       setTimeout(() => {
-        alert("YAY 💕 I can't wait for Valentine's Day with you!");
+        alert("Shawtys got a melodyyyy");
       }, 500);
     });
 
