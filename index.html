@@ -257,11 +257,174 @@
         width: 90px;
         height: 90px;
       }
+      .celebration-content h1 { font-size: 28px; }
+      .collage img { width: 130px; height: 130px; }
+    }
+
+    /* Celebration Screen */
+    .celebration-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(-45deg, #ff9a9e, #fecfef, #fbc2eb, #ff6b95);
+      background-size: 400% 400%;
+      animation: bgMove 8s ease infinite;
+      z-index: 10000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .celebration-screen.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .celebration-content {
+      text-align: center;
+      padding: 30px;
+      max-width: 90%;
+    }
+
+    .celebration-content h1 {
+      font-family: "Playfair Display", serif;
+      font-size: 42px;
+      color: #fff;
+      text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+      margin-bottom: 10px;
+      animation: pulse 1.5s ease infinite;
+    }
+
+    .celebration-content p {
+      font-size: 20px;
+      color: #fff;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 5px rgba(0,0,0,0.15);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .collage {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      max-width: 600px;
+      margin: 0 auto 30px;
+    }
+
+    .collage img {
+      width: 180px;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 20px;
+      border: 4px solid #fff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      animation: floatIn 0.8s ease backwards;
+    }
+
+    .collage img:nth-child(1) { animation-delay: 0.2s; transform: rotate(-3deg); }
+    .collage img:nth-child(2) { animation-delay: 0.4s; transform: rotate(3deg); }
+    .collage img:nth-child(3) { animation-delay: 0.6s; transform: rotate(-2deg); }
+    .collage img:nth-child(4) { animation-delay: 0.8s; transform: rotate(2deg); }
+
+    .collage img:hover {
+      transform: scale(1.1) rotate(0deg) !important;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+
+    @keyframes floatIn {
+      from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.8);
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .celebration-message {
+      background: rgba(255,255,255,0.9);
+      padding: 20px 40px;
+      border-radius: 50px;
+      font-family: "Playfair Display", serif;
+      font-size: 24px;
+      color: #ff4d6d;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      animation: bounceIn 0.6s ease 1s backwards;
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    /* Valentine's Day Celebration Mode */
+    body.valentines-day {
+      background: linear-gradient(-45deg, #ff6b6b, #ff8e8e, #ff69b4, #ff1493, #ff6b95);
+      background-size: 400% 400%;
+      animation: bgMove 6s ease infinite;
+    }
+
+    .valentines-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: linear-gradient(135deg, #ff1493, #ff69b4);
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-family: "Playfair Display", serif;
+      font-size: 24px;
+      z-index: 10001;
+      box-shadow: 0 5px 30px rgba(255,20,147,0.5);
+      animation: bannerPulse 2s ease infinite;
+      display: none;
+    }
+
+    .valentines-banner.show {
+      display: block;
+    }
+
+    @keyframes bannerPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    /* Fireworks Canvas */
+    #fireworks-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9998;
     }
   </style>
 </head>
 
 <body>
+
+  <!-- Valentine's Day Banner -->
+  <div class="valentines-banner" id="valentinesBanner">
+    💕 Happy Valentine's Day, Bebee! 💕
+  </div>
+
+  <!-- Fireworks Canvas -->
+  <canvas id="fireworks-canvas"></canvas>
 
   <!-- Sparkle cursor canvas -->
   <canvas id="sparkle-canvas"></canvas>
@@ -304,6 +467,21 @@
   <!-- Sounds -->
   <audio id="hoverSound" src="https://assets.mixkit.co/sfx/preview/mixkit-cartoon-voice-laugh-343.mp3"></audio>
   <audio id="yesSound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3"></audio>
+
+  <!-- Celebration Screen with Photo Collage -->
+  <div class="celebration-screen" id="celebrationScreen">
+    <div class="celebration-content">
+      <h1>Shawtys got a melodyyyy 😜💕</h1>
+      <p>I knew you'd say yes! 🥰</p>
+      
+      <div class="collage">
+        <img src="WhatsApp Image 2026-02-06 at 19.33.55.jpeg" alt="Us 💕">
+        <img src="WhatsApp Image 2026-02-06 at 19.33.55 (1).jpeg" alt="Us 💕">
+      </div>
+      
+      <div class="celebration-message">Happy Valentine's Day, Bebee! ❤️</div>
+    </div>
+  </div>
 
   <script>
     const noBtn = document.getElementById("no");
@@ -449,6 +627,12 @@
     yesBtn.addEventListener("click", () => {
       yesSound.play();
 
+      // Stop the No button from moving
+      if (noButtonInterval) {
+        clearInterval(noButtonInterval);
+      }
+
+      // Multiple confetti bursts!
       confetti({
         particleCount: 260,
         spread: 120,
@@ -456,11 +640,67 @@
       });
 
       setTimeout(() => {
-        alert("Shawtys got a melodyyyy 😜");
-      }, 500);
+        confetti({
+          particleCount: 150,
+          spread: 100,
+          origin: { x: 0.2, y: 0.6 }
+        });
+        confetti({
+          particleCount: 150,
+          spread: 100,
+          origin: { x: 0.8, y: 0.6 }
+        });
+      }, 300);
+
+      // Show celebration screen with collage
+      setTimeout(() => {
+        const celebrationScreen = document.getElementById("celebrationScreen");
+        celebrationScreen.classList.add("show");
+        
+        // Keep confetti going on celebration screen
+        setInterval(() => {
+          confetti({
+            particleCount: 30,
+            spread: 70,
+            origin: { x: Math.random(), y: 0.3 }
+          });
+        }, 2000);
+      }, 800);
     });
 
     // Countdown timer to Valentine's Day
+    let valentinesCelebrationStarted = false;
+    
+    function startValentinesCelebration() {
+      if (valentinesCelebrationStarted) return;
+      valentinesCelebrationStarted = true;
+      
+      // Add festive class to body
+      document.body.classList.add('valentines-day');
+      
+      // Show banner
+      document.getElementById('valentinesBanner').classList.add('show');
+      
+      // Big confetti burst!
+      confetti({
+        particleCount: 300,
+        spread: 180,
+        origin: { y: 0.5 }
+      });
+      
+      // Start fireworks
+      startFireworks();
+      
+      // Continuous confetti
+      setInterval(() => {
+        confetti({
+          particleCount: 50,
+          spread: 100,
+          origin: { x: Math.random(), y: Math.random() * 0.5 }
+        });
+      }, 1500);
+    }
+    
     function updateCountdown() {
       const valentines = new Date("February 14, 2026 00:00:00").getTime();
       const now = new Date().getTime();
@@ -468,6 +708,7 @@
 
       if (diff <= 0) {
         document.getElementById("countdown").textContent = "💕 It's Valentine's Day! 💕";
+        startValentinesCelebration();
         return;
       }
 
@@ -482,6 +723,116 @@
 
     updateCountdown();
     setInterval(updateCountdown, 1000);
+
+    // 🎆 Fireworks Effect
+    const fireworksCanvas = document.getElementById('fireworks-canvas');
+    const fwCtx = fireworksCanvas.getContext('2d');
+    fireworksCanvas.width = window.innerWidth;
+    fireworksCanvas.height = window.innerHeight;
+    
+    window.addEventListener('resize', () => {
+      fireworksCanvas.width = window.innerWidth;
+      fireworksCanvas.height = window.innerHeight;
+    });
+    
+    const fireworks = [];
+    const particles = [];
+    let fireworksActive = false;
+    
+    class Firework {
+      constructor() {
+        this.x = Math.random() * fireworksCanvas.width;
+        this.y = fireworksCanvas.height;
+        this.targetY = Math.random() * fireworksCanvas.height * 0.5;
+        this.speed = 8 + Math.random() * 4;
+        this.alive = true;
+        this.color = `hsl(${Math.random() * 60 + 330}, 100%, 60%)`;
+      }
+      
+      update() {
+        this.y -= this.speed;
+        if (this.y <= this.targetY) {
+          this.explode();
+          this.alive = false;
+        }
+      }
+      
+      explode() {
+        const particleCount = 80 + Math.floor(Math.random() * 40);
+        for (let i = 0; i < particleCount; i++) {
+          const angle = (Math.PI * 2 / particleCount) * i;
+          const speed = 2 + Math.random() * 4;
+          particles.push({
+            x: this.x,
+            y: this.y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            life: 1,
+            color: this.color,
+            size: 2 + Math.random() * 2
+          });
+        }
+      }
+      
+      draw() {
+        fwCtx.beginPath();
+        fwCtx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+        fwCtx.fillStyle = this.color;
+        fwCtx.fill();
+      }
+    }
+    
+    function startFireworks() {
+      fireworksActive = true;
+      animateFireworks();
+      
+      // Launch fireworks periodically
+      setInterval(() => {
+        if (fireworksActive && Math.random() > 0.3) {
+          fireworks.push(new Firework());
+        }
+      }, 500);
+    }
+    
+    function animateFireworks() {
+      if (!fireworksActive) return;
+      
+      fwCtx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+      fwCtx.fillRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
+      
+      // Update and draw fireworks
+      for (let i = fireworks.length - 1; i >= 0; i--) {
+        fireworks[i].update();
+        if (fireworks[i].alive) {
+          fireworks[i].draw();
+        } else {
+          fireworks.splice(i, 1);
+        }
+      }
+      
+      // Update and draw particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.05; // gravity
+        p.life -= 0.015;
+        
+        if (p.life <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+        
+        fwCtx.beginPath();
+        fwCtx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+        fwCtx.fillStyle = p.color;
+        fwCtx.globalAlpha = p.life;
+        fwCtx.fill();
+        fwCtx.globalAlpha = 1;
+      }
+      
+      requestAnimationFrame(animateFireworks);
+    }
 
     // Floating hearts
     function createHeart() {
